@@ -19,7 +19,7 @@ export const initialEdges = [
     type: 'start-end',
     data: {
       startLabel: 'M',
-      endLabel: '6', // จะถูกอัปเดทจาก App.tsx
+      endLabel: '6',
     }
   },
   {
@@ -39,7 +39,7 @@ export const initialEdges = [
     type: 'start-end',
     data: {
       startLabel: 'DW',
-      endLabel: '3', // จะถูกอัปเดทจาก App.tsx
+      endLabel: '3',
     }
   },
   {
@@ -59,7 +59,7 @@ export const initialEdges = [
     type: 'start-end',
     data: {
       startLabel: 'S',
-      endLabel: '47', // จะถูกอัปเดทจาก App.tsx
+      endLabel: '47',
     }
   },
 ] satisfies Edge[];

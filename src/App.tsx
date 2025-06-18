@@ -195,7 +195,7 @@ export default function App() {
   // เรียก updateDateTime ครั้งแรกเมื่อ component mount เพื่อแก้ bug ค่าเริ่มต้น
   useEffect(() => {
     updateDateTime();
-  }, []);
+  }, [updateDateTime]);
 
   // อัปเดท datetime ทุกวินาที
   useEffect(() => {

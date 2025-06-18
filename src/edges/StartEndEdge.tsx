@@ -1,18 +1,46 @@
-import React from 'react';
+import React, { type FC } from 'react';
 import { 
-  EdgeProps, 
   getBezierPath, 
-  EdgeLabelRenderer,
-  BaseEdge,
-  MarkerType
+  EdgeLabelRenderer, 
+  BaseEdge, 
+  type EdgeProps,
+  type Edge 
 } from '@xyflow/react';
 
-interface StartEndEdgeData {
-  startLabel?: string;
-  endLabel?: string;
+// Helper component สำหรับแสดง edge label
+function EdgeLabel({ 
+  transform, 
+  label, 
+  backgroundColor = '#666' 
+}: { 
+  transform: string; 
+  label: string; 
+  backgroundColor?: string;
+}) {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        background: backgroundColor,
+        color: 'white',
+        padding: '4px 8px',
+        borderRadius: '4px',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        transform,
+        zIndex: 1000,
+      }}
+      className="nodrag nopan"
+    >
+      {label}
+    </div>
+  );
 }
 
-export default function StartEndEdge({
+const StartEndEdge: FC<EdgeProps<Edge<{ 
+  startLabel?: string; 
+  endLabel?: string; 
+}>>> = ({
   id,
   sourceX,
   sourceY,
@@ -23,8 +51,8 @@ export default function StartEndEdge({
   style = {},
   data,
   markerEnd,
-}: EdgeProps<StartEndEdgeData>) {
-  const [edgePath, labelX, labelY] = getBezierPath({
+}) => {
+  const [edgePath] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -41,9 +69,13 @@ export default function StartEndEdge({
   const endLabelX = sourceX + (targetX - sourceX) * 0.85;
   const endLabelY = sourceY + (targetY - sourceY) * 0.85;
 
+  // ดึงสีจาก style
+  const backgroundColor = (style.stroke as string) || '#666';
+
   return (
     <>
       <BaseEdge 
+        id={id}
         path={edgePath} 
         markerEnd={markerEnd}
         style={style}
@@ -51,46 +83,24 @@ export default function StartEndEdge({
       <EdgeLabelRenderer>
         {/* Start Label */}
         {data?.startLabel && (
-          <div
-            style={{
-              position: 'absolute',
-              transform: `translate(-50%, -50%) translate(${startLabelX}px,${startLabelY}px)`,
-              fontSize: '12px',
-              fontWeight: 'bold',
-              pointerEvents: 'all',
-              backgroundColor: style.stroke || '#666',
-              color: 'white',
-              padding: '4px 8px',
-              borderRadius: '4px',
-              zIndex: 1000,
-            }}
-            className="nodrag nopan"
-          >
-            {data.startLabel}
-          </div>
+          <EdgeLabel
+            transform={`translate(-50%, -50%) translate(${startLabelX}px,${startLabelY}px)`}
+            label={data.startLabel}
+            backgroundColor={backgroundColor}
+          />
         )}
         
         {/* End Label */}
         {data?.endLabel && (
-          <div
-            style={{
-              position: 'absolute',
-              transform: `translate(-50%, -50%) translate(${endLabelX}px,${endLabelY}px)`,
-              fontSize: '12px',
-              fontWeight: 'bold',
-              pointerEvents: 'all',
-              backgroundColor: style.stroke || '#666',
-              color: 'white',
-              padding: '4px 8px',
-              borderRadius: '4px',
-              zIndex: 1000,
-            }}
-            className="nodrag nopan"
-          >
-            {data.endLabel}
-          </div>
+          <EdgeLabel
+            transform={`translate(-50%, -50%) translate(${endLabelX}px,${endLabelY}px)`}
+            label={data.endLabel}
+            backgroundColor={backgroundColor}
+          />
         )}
       </EdgeLabelRenderer>
     </>
   );
-}
+};
+
+export default StartEndEdge;
