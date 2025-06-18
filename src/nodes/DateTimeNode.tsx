@@ -1,19 +1,6 @@
 import React, { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-
-// กำหนด type ภายในไฟล์
-interface DateTimeNodeData {
-  label: string;
-  value: {
-    Year: number;
-    Month: number;
-    Day_Month: number;
-    Hours: number;
-    Minutes: number;
-    Seconds: number;
-    Day_Week: number;
-  };
-}
+import type { DateTimeNodeData } from "./index";
 
 const DEFAULT_HANDLE_STYLE = {
   width: 16,
@@ -93,7 +80,6 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         style={{
           ...DEFAULT_HANDLE_STYLE,
           top: "89px",
-
           borderColor: "#6B7280",
         }}
         isConnectable={isConnectable}
@@ -121,7 +107,7 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         position={Position.Right}
         style={{
           ...DEFAULT_HANDLE_STYLE,
-          top: "161px", // ปรับให้ตรงกับแถว Day_Month
+          top: "161px",
           borderColor: "#6B7280",
         }}
         isConnectable={isConnectable}
@@ -149,7 +135,7 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         position={Position.Right}
         style={{
           ...DEFAULT_HANDLE_STYLE,
-          top: "233px", // ปรับให้ตรงกับแถว Minutes
+          top: "233px",
           borderColor: "#6B7280",
         }}
         isConnectable={isConnectable}
@@ -177,7 +163,7 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         position={Position.Right}
         style={{
           ...DEFAULT_HANDLE_STYLE,
-          top: "305px", // ปรับให้ตรงกับแถว Day_Week
+          top: "305px",
           borderColor: "#6B7280",
         }}
         isConnectable={isConnectable}

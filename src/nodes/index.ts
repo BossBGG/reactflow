@@ -1,44 +1,56 @@
 import type { Node, NodeTypes, BuiltInNode } from "@xyflow/react";
 import { PositionLoggerNode } from "./PositionLoggerNode";
-import DateTimeNodeComponent from "./DateTimeNode"; // แก้ไข import ให้ถูกต้อง
+import DateTimeNodeComponent from "./DateTimeNode";
+import LoGComponent from "./LoG";
+import NumberDisplayNodeComponent from "./NumberDisplayNode";
 
-export type PositionLoggerNode = Node<
-  {
-    label?: string;
-  },
-  "position-logger"
->;
+// กำหนด interface แยกจาก Node type
+export interface DateTimeNodeData {
+  label: string;
+  value: {
+    Year: number;
+    Month: number;
+    Day_Month: number;
+    Hours: number;
+    Minutes: number;
+    Seconds: number;
+    Day_Week: number;
+  };
+}
 
-export type DateTimeNode = Node<
-  {
-    label: string;
-    value: {
-      Year: number;
-      Month: number;
-      Day_Month: number;
-      Hours: number;
-      Minutes: number;
-      Seconds: number;
-      Day_Week: number;
-    };
-  },
-  "datetime"
->;
+export interface LoGNodeData {
+  label?: string;
+  value?: string;
+}
 
-export type LoG = Node<
-  {
-    value: string
-  },
-  "LoG"
->;
+export interface NumberDisplayNodeData {
+  label?: string;
+  value: number;
+  color?: string;
+  sourceNodeId?: string;
+  sourceField?: string;
+}
 
-export type AppNode = BuiltInNode | PositionLoggerNode | DateTimeNode;
+export interface PositionLoggerNodeData {
+  label?: string;
+}
+
+// กำหนด Node types
+export type PositionLoggerNode = Node<PositionLoggerNodeData, "position-logger">;
+export type DateTimeNode = Node<DateTimeNodeData, "datetime">;
+export type LoGNode = Node<LoGNodeData, "LoG">;
+export type NumberDisplayNode = Node<NumberDisplayNodeData, "number-display">;
+
+export type AppNode = BuiltInNode | PositionLoggerNode | DateTimeNode | LoGNode | NumberDisplayNode;
+
+// Export data interfaces
+export type { DateTimeNodeData, LoGNodeData, NumberDisplayNodeData, PositionLoggerNodeData };
 
 export const initialNodes: AppNode[] = [
   { 
     id: "a", 
     type: "datetime", 
-    position: { x: 250, y: 50 }, 
+    position: { x: 50, y: 50 }, 
     data: { 
       label: "DATE_TIME",
       value: { 
@@ -55,14 +67,41 @@ export const initialNodes: AppNode[] = [
   {
     id: "b",
     type: "LoG",
-    position: { x: 50, y: 300 },
-    data: { label: "drag me!" },
+    position: { x: 650, y: 100 },
+    data: { 
+      label: "LoG Filter",
+      value: "edge-detection" 
+    },
   },
- 
+  {
+    id: "c",
+    type: "number-display",
+    position: { x: 450, y: 200 },
+    data: { 
+      label: "Month",
+      value: 6, // จะถูกอัปเดทจาก datetime
+      color: "#3B82F6",
+      sourceNodeId: "a",
+      sourceField: "Month"
+    },
+  },
+  {
+    id: "d",
+    type: "number-display",
+    position: { x: 450, y: 350 },
+    data: { 
+      label: "Day Week",
+      value: 2, // จะถูกอัปเดทจาก datetime
+      color: "#EF4444",
+      sourceNodeId: "a",
+      sourceField: "Day_Week"
+    },
+  },
 ];
 
-export const nodeTypes = {
+export const nodeTypes: NodeTypes = {
   "position-logger": PositionLoggerNode,
-  "datetime": DateTimeNodeComponent, // ใช้ component ที่ import ถูกต้อง
-  // Add any of your custom nodes here!
-} satisfies NodeTypes;
+  "datetime": DateTimeNodeComponent,
+  "LoG": LoGComponent,
+  "number-display": NumberDisplayNodeComponent,
+};
