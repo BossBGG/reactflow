@@ -36,15 +36,12 @@ export interface PositionLoggerNodeData {
 }
 
 // กำหนด Node types
-export type PositionLoggerNode = Node<PositionLoggerNodeData, "position-logger">;
+export type PositionLoggerNodeType = Node<PositionLoggerNodeData, "position-logger">;
 export type DateTimeNode = Node<DateTimeNodeData, "datetime">;
 export type LoGNode = Node<LoGNodeData, "LoG">;
 export type NumberDisplayNode = Node<NumberDisplayNodeData, "number-display">;
 
-export type AppNode = BuiltInNode | PositionLoggerNode | DateTimeNode | LoGNode | NumberDisplayNode;
-
-// Export data interfaces
-export type { DateTimeNodeData, LoGNodeData, NumberDisplayNodeData, PositionLoggerNodeData };
+export type AppNode = BuiltInNode | PositionLoggerNodeType | DateTimeNode | LoGNode | NumberDisplayNode;
 
 export const initialNodes: AppNode[] = [
   { 
@@ -79,7 +76,7 @@ export const initialNodes: AppNode[] = [
     position: { x: 450, y: 200 },
     data: { 
       label: "Month",
-      value: 6, // จะถูกอัปเดทจาก datetime
+      value: 6,
       color: "#3B82F6",
       sourceNodeId: "a",
       sourceField: "Month"
@@ -91,10 +88,22 @@ export const initialNodes: AppNode[] = [
     position: { x: 450, y: 350 },
     data: { 
       label: "Day Week",
-      value: 2, // จะถูกอัปเดทจาก datetime
+      value: 2,
       color: "#EF4444",
       sourceNodeId: "a",
       sourceField: "Day_Week"
+    },
+  },
+  {
+    id: "e",
+    type: "number-display",
+    position: { x: 450, y: 500 },
+    data: { 
+      label: "Seconds",
+      value: 45,
+      color: "#F59E0B",
+      sourceNodeId: "a",
+      sourceField: "Seconds"
     },
   },
 ];

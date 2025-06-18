@@ -15,6 +15,7 @@ import "@xyflow/react/dist/style.css";
 import { initialNodes, nodeTypes, type DateTimeNode } from "./nodes";
 import { initialEdges, edgeTypes } from "./edges";
 
+
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -24,18 +25,43 @@ export default function App() {
     [setEdges]
   );
 
-  // ฟังก์ชันสำหรับอัปเดท number-display nodes ตามค่าจาก datetime
-  const updateNumberDisplayNodes = useCallback(() => {
+  // ฟังก์ชันสำหรับอัปเดท datetime values 
+  const updateDateTime = useCallback(() => {
+    const now = new Date();
+    
     setNodes((currentNodes) => {
-      const dateTimeNode = currentNodes.find(node => node.type === "datetime") as DateTimeNode;
-      if (!dateTimeNode) return currentNodes;
-
-      return currentNodes.map(node => {
-        if (node.type === "number-display") {
+      // อัปเดท datetime node ก่อน
+      const updatedNodes = currentNodes.map(node => {
+        if (node.type === "datetime") {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              value: {
+                Year: now.getFullYear(),
+                Month: now.getMonth() + 1,
+                Day_Month: now.getDate(),
+                Hours: now.getHours(),
+                Minutes: now.getMinutes(),
+                Seconds: now.getSeconds(),
+                Day_Week: now.getDay()
+              }
+            }
+          };
+        }
+        return node;
+      });
+      
+      // หา datetime node ที่อัปเดทแล้ว
+      const dateTimeNode = updatedNodes.find(n => n.type === "datetime") as DateTimeNode;
+      
+      // อัปเดท number-display nodes ตามค่าจาก datetime
+      return updatedNodes.map(node => {
+        if (node.type === "number-display" && dateTimeNode) {
           const nodeData = node.data as any;
           if (nodeData.sourceNodeId && nodeData.sourceField) {
             const newValue = dateTimeNode.data.value[nodeData.sourceField as keyof typeof dateTimeNode.data.value];
-            if (newValue !== undefined && newValue !== nodeData.value) {
+            if (newValue !== undefined) {
               return {
                 ...node,
                 data: {
@@ -51,38 +77,7 @@ export default function App() {
     });
   }, [setNodes]);
 
-  // อัปเดท number display nodes เมื่อ datetime node เปลี่ยนแปลง
-  useEffect(() => {
-    updateNumberDisplayNodes();
-  }, [nodes, updateNumberDisplayNodes]);
-
-  // ฟังก์ชันสำหรับอัปเดท datetime values (สำหรับทดสอบ)
-  const updateDateTime = useCallback(() => {
-    const now = new Date();
-    setNodes((currentNodes) => 
-      currentNodes.map(node => 
-        node.type === "datetime" 
-          ? {
-              ...node,
-              data: {
-                ...node.data,
-                value: {
-                  Year: now.getFullYear(),
-                  Month: now.getMonth() + 1,
-                  Day_Month: now.getDate(),
-                  Hours: now.getHours(),
-                  Minutes: now.getMinutes(),
-                  Seconds: now.getSeconds(),
-                  Day_Week: now.getDay()
-                }
-              }
-            }
-          : node
-      )
-    );
-  }, [setNodes]);
-
-  // อัปเดท datetime ทุกวินาที (สำหรับการทดสอบ)
+  // อัปเดท datetime ทุกวินาที 
   useEffect(() => {
     const interval = setInterval(updateDateTime, 1000);
     return () => clearInterval(interval);

@@ -5,18 +5,18 @@ import type { DateTimeNodeData } from "./index";
 const DEFAULT_HANDLE_STYLE = {
   width: 16,
   height: 16,
-  right: -1,
+ 
   background: "#ffffff",
   border: "2px solid #6B7280",
   borderRadius: "50%",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontSize: "14px",
+  fontSize: "12px",
   fontWeight: "bold",
   color: "#374151",
   zIndex: 10,
-};
+} as React.CSSProperties;
 
 export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
   return (
@@ -35,44 +35,51 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         <h3 className="font-semibold text-lg text-gray-800">DATE_TIME</h3>
       </div>
 
-      <div className="flex flex-col mt-6 items-end gap-y-3 ">
+      <div className="flex flex-col mt-6 gap-y-3 items-end">
         {/* Year */}
-        <div className="flex items-center h-6 ">
-          <span className="text-gray-700 flex-1">Year</span>
+        <div className="flex items-center justify-between h-6">
+          <span className="text-gray-700">Year</span>
+          
         </div>
 
-        {/* Month - with blue highlight */}
-        <div className="flex items-center h-6">
-          <span className="text-gray-700 flex-1">Month</span>
+        {/* Month */}
+        <div className="flex items-center justify-between h-6">
+          <span className="text-gray-700">Month</span>
+          
         </div>
 
         {/* Day_Month */}
-        <div className="flex items-center h-6">
-          <span className="text-gray-700 flex-1">Day_Month</span>
+        <div className="flex items-center justify-between h-6">
+          <span className="text-gray-700">Day_Month</span>
+          
         </div>
 
         {/* Hours */}
-        <div className="flex items-center h-6">
-          <span className="text-gray-700 flex-1">Hours</span>
+        <div className="flex items-center justify-between h-6">
+          <span className="text-gray-700">Hours</span>
+          
         </div>
 
         {/* Minutes */}
-        <div className="flex items-center h-6">
-          <span className="text-gray-700 flex-1">Minutes</span>
+        <div className="flex items-center justify-between h-6">
+          <span className="text-gray-700">Minutes</span>
+          
         </div>
 
         {/* Seconds */}
-        <div className="flex items-center h-6">
-          <span className="text-gray-700 flex-1">Seconds</span>
+        <div className="flex items-center justify-between h-6">
+          <span className="text-gray-700">Seconds</span>
+          
         </div>
 
-        {/* Day_Week - with blue highlight */}
-        <div className="flex items-center h-6">
-          <span className="text-gray-700 flex-1">Day_Week</span>
+        {/* Day_Week */}
+        <div className="flex items-center justify-between h-6">
+          <span className="text-gray-700">Day_Week</span>
+          
         </div>
       </div>
 
-      {/* All Handles with text labels */}
+      {/* All Handles with proper positioning */}
       <Handle
         type="source"
         id="year"
@@ -80,11 +87,11 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         style={{
           ...DEFAULT_HANDLE_STYLE,
           top: "89px",
-          borderColor: "#6B7280",
+          right: "-1px",
         }}
         isConnectable={isConnectable}
       >
-        <div className="ml-14">{data.value.Year}</div>
+        <span className="text-gray-900 font-medium text-lg ml-24">{data.value.Year}</span>
       </Handle>
 
       <Handle
@@ -94,13 +101,12 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         style={{
           ...DEFAULT_HANDLE_STYLE,
           top: "125px",
-          borderColor: "#6B7280",
+          right: "-1px",
         }}
         isConnectable={isConnectable}
       >
-        <div className="ml-14">{data.value.Month}</div>
-      </Handle>
-
+        <span className="text-gray-900 font-medium text-lg ml-24">{data.value.Month}</span>
+       </Handle>
       <Handle
         type="source"
         id="day_month"
@@ -108,13 +114,12 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         style={{
           ...DEFAULT_HANDLE_STYLE,
           top: "161px",
-          borderColor: "#6B7280",
+          right: "-1px",
         }}
         isConnectable={isConnectable}
       >
-        <div className="ml-14">{data.value.Day_Month}</div>
+        <span className="text-gray-900 font-medium text-lg ml-24">{data.value.Day_Month}</span>
       </Handle>
-
       <Handle
         type="source"
         id="hours"
@@ -122,13 +127,13 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         style={{
           ...DEFAULT_HANDLE_STYLE,
           top: "197px",
-          borderColor: "#6B7280",
+          right: "-1px",
         }}
         isConnectable={isConnectable}
       >
-        <div className="ml-14">{data.value.Hours}</div>
+        <span className="text-gray-900 font-medium text-lg ml-24">{data.value.Hours}</span>
       </Handle>
-
+        
       <Handle
         type="source"
         id="minutes"
@@ -136,12 +141,12 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         style={{
           ...DEFAULT_HANDLE_STYLE,
           top: "233px",
-          borderColor: "#6B7280",
+          right: "-1px",
         }}
         isConnectable={isConnectable}
       >
-        <div className="ml-14">{data.value.Minutes}</div>
-      </Handle>
+        <span className="text-gray-900 font-medium text-lg ml-24">{data.value.Minutes}</span>
+       </Handle>
 
       <Handle
         type="source"
@@ -150,11 +155,11 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         style={{
           ...DEFAULT_HANDLE_STYLE,
           top: "269px",
-          borderColor: "#6B7280",
+          right: "-1px",
         }}
         isConnectable={isConnectable}
       >
-        <div className="ml-14">{data.value.Seconds}</div>
+        <span className="text-gray-900 font-medium text-lg ml-24">{data.value.Seconds}</span>
       </Handle>
 
       <Handle
@@ -164,12 +169,12 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         style={{
           ...DEFAULT_HANDLE_STYLE,
           top: "305px",
-          borderColor: "#6B7280",
+          right: "-1px",
         }}
         isConnectable={isConnectable}
       >
-        <div className="ml-14">{data.value.Day_Week}</div>
-      </Handle>
+        <span className="text-gray-900 font-medium text-lg ml-24">{data.value.Day_Week}</span>
+       </Handle>
     </div>
   );
 });

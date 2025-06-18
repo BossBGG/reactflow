@@ -1,19 +1,17 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-
-import { type PositionLoggerNode } from "./";
+import { type PositionLoggerNodeData } from "./index";
 
 export function PositionLoggerNode({
   positionAbsoluteX,
   positionAbsoluteY,
   data,
-}: NodeProps<PositionLoggerNode>) {
-  const x = `${Math.round(positionAbsoluteX)}px`;
-  const y = `${Math.round(positionAbsoluteY)}px`;
+}: NodeProps<PositionLoggerNodeData>) {
+  const x = `${Math.round(positionAbsoluteX || 0)}px`;
+  const y = `${Math.round(positionAbsoluteY || 0)}px`;
 
   return (
-    // We add this class to use the same styles as React Flow's default nodes.
-    <div className="react-flow__node-default ">
-      {data.label && <div>{data.label}</div>}
+    <div className="react-flow__node-default">
+      {data?.label && <div>{data.label}</div>}
 
       <div>
         {x} {y}
