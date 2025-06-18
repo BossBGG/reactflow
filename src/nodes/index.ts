@@ -1,6 +1,6 @@
 import type { Node, NodeTypes, BuiltInNode } from "@xyflow/react";
 import { PositionLoggerNode } from "./PositionLoggerNode";
-import { DateTimeNode } from "./DateTimeNode";
+import DateTimeNodeComponent from "./DateTimeNode"; // แก้ไข import ให้ถูกต้อง
 
 export type PositionLoggerNode = Node<
   {
@@ -25,6 +25,13 @@ export type DateTimeNode = Node<
   "datetime"
 >;
 
+export type LoG = Node<
+  {
+    value: string
+  },
+  "LoG"
+>;
+
 export type AppNode = BuiltInNode | PositionLoggerNode | DateTimeNode;
 
 export const initialNodes: AppNode[] = [
@@ -47,25 +54,15 @@ export const initialNodes: AppNode[] = [
   },
   {
     id: "b",
-    type: "position-logger",
+    type: "LoG",
     position: { x: 50, y: 300 },
     data: { label: "drag me!" },
   },
-  { 
-    id: "c", 
-    position: { x: 450, y: 300 }, 
-    data: { label: "your ideas" } 
-  },
-  {
-    id: "d",
-    type: "output",
-    position: { x: 250, y: 450 },
-    data: { label: "with React Flow" },
-  },
+ 
 ];
 
 export const nodeTypes = {
   "position-logger": PositionLoggerNode,
-  "datetime": DateTimeNode,
+  "datetime": DateTimeNodeComponent, // ใช้ component ที่ import ถูกต้อง
   // Add any of your custom nodes here!
 } satisfies NodeTypes;
