@@ -1,12 +1,12 @@
 import { MarkerType, type Edge, type EdgeTypes } from "@xyflow/react";
+import StartEndEdge from "./StartEndEdge";
 
 export const initialEdges = [
-  
-  { 
-    id: "a-month->c", 
-    source: "a", 
+  {
+    id: "a-month->c",
+    source: "a",
     sourceHandle: "month",
-    target: "c", 
+    target: "c",
     targetHandle: "input",
     markerEnd: {
       type: MarkerType.Arrow,
@@ -15,14 +15,18 @@ export const initialEdges = [
       color: '#3B82F6',
     },
     animated: true,
-    style: { stroke: '#3B82F6', strokeWidth: 2 }
+    style: { stroke: '#3B82F6', strokeWidth: 2 },
+    type: 'start-end',
+    data: {
+      startLabel: 'M',
+      endLabel: '6', // จะถูกอัปเดทจาก App.tsx
+    }
   },
-  
-  { 
-    id: "a-day_week->d", 
-    source: "a", 
+  {
+    id: "a-day_week->d",
+    source: "a",
     sourceHandle: "day_week",
-    target: "d", 
+    target: "d",
     targetHandle: "input",
     markerEnd: {
       type: MarkerType.Arrow,
@@ -31,13 +35,18 @@ export const initialEdges = [
       color: '#EF4444',
     },
     animated: true,
-    style: { stroke: '#EF4444', strokeWidth: 2 }
+    style: { stroke: '#EF4444', strokeWidth: 2 },
+    type: 'start-end',
+    data: {
+      startLabel: 'DW',
+      endLabel: '3', // จะถูกอัปเดทจาก App.tsx
+    }
   },
-  { 
-    id: "a-seconds->e", 
-    source: "a", 
+  {
+    id: "a-seconds->e",
+    source: "a",
     sourceHandle: "seconds",
-    target: "e", 
+    target: "e",
     targetHandle: "input",
     markerEnd: {
       type: MarkerType.Arrow,
@@ -46,12 +55,15 @@ export const initialEdges = [
       color: '#F59E0B',
     },
     animated: true,
-    style: { stroke: '#F59E0B', strokeWidth: 2 }
+    style: { stroke: '#F59E0B', strokeWidth: 2 },
+    type: 'start-end',
+    data: {
+      startLabel: 'S',
+      endLabel: '47', // จะถูกอัปเดทจาก App.tsx
+    }
   },
-  
-  
 ] satisfies Edge[];
 
 export const edgeTypes = {
-  
+  'start-end': StartEndEdge,
 } satisfies EdgeTypes;

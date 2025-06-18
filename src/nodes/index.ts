@@ -70,6 +70,7 @@ export const initialNodes: AppNode[] = [
       value: "edge-detection" 
     },
   },
+  // NumberDisplayNodes ที่มีการเชื่อมต่อตายตัว (สำหรับ reference)
   {
     id: "c",
     type: "number-display",
@@ -94,16 +95,35 @@ export const initialNodes: AppNode[] = [
       sourceField: "Day_Week"
     },
   },
+  // NumberDisplayNodes ว่างสำหรับทดสอบการลาก edge
   {
-    id: "e",
+    id: "f",
     type: "number-display",
-    position: { x: 450, y: 500 },
+    position: { x: 700, y: 300 },
     data: { 
-      label: "Seconds",
-      value: 45,
-      color: "#F59E0B",
-      sourceNodeId: "a",
-      sourceField: "Seconds"
+      label: "Empty Box 1",
+      value: 0,
+      color: "#10B981" // สีเขียว
+    },
+  },
+  {
+    id: "g",
+    type: "number-display",
+    position: { x: 700, y: 450 },
+    data: { 
+      label: "Empty Box 2",
+      value: 0,
+      color: "#8B5CF6" // สีม่วง
+    },
+  },
+  {
+    id: "h",
+    type: "number-display",
+    position: { x: 700, y: 600 },
+    data: { 
+      label: "Empty Box 3",
+      value: 0,
+      color: "#F59E0B" // สีเหลือง
     },
   },
 ];
