@@ -15,10 +15,10 @@ export const initialEdges = [
       color: '#3B82F6',
     },
     animated: true,
-    style: { stroke: '#3B82F6', strokeWidth: 2 },
+    style: { stroke: '', strokeWidth: 2 },
     type: 'start-end',
     data: {
-      startLabel: 'M',
+     
       endLabel: '6',
     }
   },
@@ -35,10 +35,10 @@ export const initialEdges = [
       color: '#EF4444',
     },
     animated: true,
-    style: { stroke: '#EF4444', strokeWidth: 2 },
+    style: { stroke: '', strokeWidth: 2 },
     type: 'start-end',
     data: {
-      startLabel: 'DW',
+      
       endLabel: '3',
     }
   },
@@ -55,10 +55,10 @@ export const initialEdges = [
       color: '#F59E0B',
     },
     animated: true,
-    style: { stroke: '#F59E0B', strokeWidth: 2 },
+    style: { stroke: '', strokeWidth: 2 },
     type: 'start-end',
     data: {
-      startLabel: 'S',
+      
       endLabel: '47',
     }
   },

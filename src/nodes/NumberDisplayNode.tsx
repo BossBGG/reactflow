@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useMemo } from "react";
-import { Handle, Position, type NodeProps, useReactFlow } from "@xyflow/react";
+import React, { memo } from "react";
+import { Handle, Position, type NodeProps, useNodeConnections } from "@xyflow/react";
 import type { NumberDisplayNodeData } from "./index";
 
 const DEFAULT_HANDLE_STYLE = {
@@ -18,105 +18,16 @@ const DEFAULT_HANDLE_STYLE = {
 } as React.CSSProperties;
 
 export default memo(({ data, id, isConnectable }: NodeProps<NumberDisplayNodeData>) => {
-  const { getNodes, getEdges, setNodes } = useReactFlow();
   const borderColor = data.color || "#6B7280";
   const bgColor = data.color || "#6B7280";
 
-  // ใช้ useMemo เพื่อหาข้อมูลจาก edge และ source node
-  const connectionData = useMemo(() => {
-    const edges = getEdges();
-    const nodes = getNodes();
-    
-    // หา edge ที่มี target เป็น node นี้
-    const incomingEdge = edges.find(edge => edge.target === id);
-    
-    if (!incomingEdge) {
-      return null;
-    }
-    
-    // หา source node
-    const sourceNode = nodes.find(node => node.id === incomingEdge.source);
-    
-    if (!sourceNode || sourceNode.type !== "datetime") {
-      return null;
-    }
-    
-    return {
-      edge: incomingEdge,
-      sourceNode,
-      sourceHandle: incomingEdge.sourceHandle
-    };
-  }, [getEdges, getNodes, id]);
+  // ตรวจสอบจำนวนการเชื่อมต่อที่ handle นี้
+  const connections = useNodeConnections({
+    handleType: 'target',
+  });
 
-  // อัปเดทข้อมูลเมื่อมีการเชื่อมต่อหรือข้อมูลเปลี่ยน
-  useEffect(() => {
-    if (!connectionData) {
-      return;
-    }
-
-    const { sourceNode, sourceHandle } = connectionData;
-    const dateTimeData = sourceNode.data as any;
-    
-    let newValue = data.value;
-    let newLabel = data.label;
-    
-    // กำหนดค่าตาม sourceHandle
-    switch (sourceHandle) {
-      case "year":
-        newValue = dateTimeData.value.Year;
-        newLabel = "Year";
-        break;
-      case "month":
-        newValue = dateTimeData.value.Month;
-        newLabel = "Month";
-        break;
-      case "day_month":
-        newValue = dateTimeData.value.Day_Month;
-        newLabel = "Day";
-        break;
-      case "hours":
-        newValue = dateTimeData.value.Hours;
-        newLabel = "Hours";
-        break;
-      case "minutes":
-        newValue = dateTimeData.value.Minutes;
-        newLabel = "Minutes";
-        break;
-      case "seconds":
-        newValue = dateTimeData.value.Seconds;
-        newLabel = "Seconds";
-        break;
-      case "day_week":
-        newValue = dateTimeData.value.Day_Week;
-        newLabel = "Day Week";
-        break;
-      default:
-        break;
-    }
-    
-    // อัปเดท node ถ้าค่าเปลี่ยนแปลง
-    if (newValue !== data.value || newLabel !== data.label) {
-      setNodes(nodes => 
-        nodes.map(node => 
-          node.id === id 
-            ? { 
-                ...node, 
-                data: { 
-                  ...node.data, 
-                  value: newValue,
-                  label: newLabel,
-                  sourceNodeId: connectionData.edge.source,
-                  sourceField: sourceHandle
-                } 
-              }
-            : node
-        )
-      );
-    }
-  }, [connectionData, data.value, data.label, id, setNodes]);
-
-  // แสดงสถานะการเชื่อมต่อ
-  const isConnected = connectionData !== null;
+  // จำกัดให้เชื่อมต่อได้แค่ 1 เส้น
+  const isConnectionAllowed = connections.length < 1;
 
   return (
     <div 
@@ -124,7 +35,7 @@ export default memo(({ data, id, isConnectable }: NodeProps<NumberDisplayNodeDat
       style={{ borderColor }}
     >
       <div className="text-sm text-gray-600">
-        {isConnected ? "IN" : "IN"}
+        IN
       </div>
       
       {/* Large Number Display */}
@@ -142,7 +53,7 @@ export default memo(({ data, id, isConnectable }: NodeProps<NumberDisplayNodeDat
         )}
       </div>
 
-      {/* Input Handle */}
+      {/* Input Handle - จำกัดการเชื่อมต่อแค่ 1 เส้น */}
       <Handle
         type="target"
         id="input"
@@ -153,11 +64,10 @@ export default memo(({ data, id, isConnectable }: NodeProps<NumberDisplayNodeDat
           left: "-9px",
           transform: "translateY(-50%)",
           borderColor,
+          
         }}
-        isConnectable={isConnectable}
+        isConnectable={isConnectable && isConnectionAllowed}
       />
-
-      
     </div>
   );
 });

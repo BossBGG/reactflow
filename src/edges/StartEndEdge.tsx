@@ -25,7 +25,7 @@ function EdgeLabel({
         color: 'white',
         padding: '4px 8px',
         borderRadius: '4px',
-        fontSize: '12px',
+        fontSize: '16px',
         fontWeight: 'bold',
         transform,
         zIndex: 1000,

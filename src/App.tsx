@@ -8,11 +8,12 @@ import {
   useNodesState,
   useEdgesState,
   type OnConnect,
+  MarkerType,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
 
-import { initialNodes, nodeTypes, type DateTimeNode } from "./nodes";
+import { initialNodes, nodeTypes } from "./nodes";
 import { initialEdges, edgeTypes } from "./edges";
 
 export default function App() {
@@ -23,16 +24,28 @@ export default function App() {
   const onConnect: OnConnect = useCallback(
     (connection) => {
       console.log("New connection:", connection);
-      setEdges((edges) => addEdge({
+      const newEdge = {
         ...connection,
         animated: true,
-        style: { stroke: '#6B7280', strokeWidth: 2 }
-      }, edges));
+        style: { stroke: '#6B7280', strokeWidth: 2 },
+        type: 'start-end',
+        markerEnd: {
+          type: MarkerType.Arrow,
+          width: 20,
+          height: 20,
+          color: '#6B7280',
+        },
+        data: {
+          startLabel: '',
+          endLabel: '0',
+        }
+      };
+      setEdges((edges) => addEdge(newEdge, edges));
     },
     [setEdges]
   );
 
-  // ฟังก์ชันสำหรับอัปเดท datetime values และ connected number-display nodes
+  // ฟังก์ชันสำหรับอัปเดท datetime values
   const updateDateTime = useCallback(() => {
     const now = new Date();
     const newDateTimeValue = {
@@ -45,12 +58,9 @@ export default function App() {
       Day_Week: now.getDay()
     };
     
-    // อัปเดท nodes และ edges พร้อมกัน
+    // อัปเดท datetime node และ number-display nodes
     setNodes((currentNodes) => {
-      const currentEdges = edges;
-      
-      // อัปเดท datetime node ก่อน
-      const updatedNodes = currentNodes.map(node => {
+      return currentNodes.map(node => {
         if (node.type === "datetime") {
           return {
             ...node,
@@ -60,21 +70,13 @@ export default function App() {
             }
           };
         }
-        return node;
-      });
-      
-      // หา datetime node ที่อัปเดทแล้ว
-      const dateTimeNode = updatedNodes.find(n => n.type === "datetime");
-      
-      if (!dateTimeNode) return updatedNodes;
-      
-      // อัปเดท number-display nodes ทั้งแบบตายตัวและแบบ dynamic
-      return updatedNodes.map(node => {
+        
+        // อัปเดท number-display nodes ทั้งแบบ static และ dynamic
         if (node.type === "number-display") {
           const nodeData = node.data as any;
           
-          // สำหรับ nodes ที่มี sourceNodeId และ sourceField (แบบตายตัว)
-          if (nodeData.sourceNodeId && nodeData.sourceField && dateTimeNode) {
+          // ตรวจสอบว่า node นี้มี sourceField หรือไม่ (static connection)
+          if (nodeData.sourceNodeId && nodeData.sourceField) {
             const newValue = newDateTimeValue[nodeData.sourceField as keyof typeof newDateTimeValue];
             if (newValue !== undefined) {
               return {
@@ -87,15 +89,13 @@ export default function App() {
             }
           }
           
-          // สำหรับ nodes ที่เชื่อมต่อผ่าน edges (แบบ dynamic)
-          const incomingEdge = currentEdges.find(edge => edge.target === node.id);
-          if (incomingEdge && incomingEdge.source === dateTimeNode.id) {
+          // ตรวจสอบ dynamic connection ผ่าน edges
+          const incomingEdge = edges.find(edge => edge.target === node.id);
+          if (incomingEdge && incomingEdge.source === "a") {
             const sourceHandle = incomingEdge.sourceHandle;
-            
             let newValue = nodeData.value;
             let newLabel = nodeData.label;
             
-            // กำหนดค่าตาม sourceHandle
             switch (sourceHandle) {
               case "year":
                 newValue = newDateTimeValue.Year;
@@ -125,8 +125,6 @@ export default function App() {
                 newValue = newDateTimeValue.Day_Week;
                 newLabel = "Day Week";
                 break;
-              default:
-                break;
             }
             
             return {
@@ -134,9 +132,7 @@ export default function App() {
               data: {
                 ...nodeData,
                 value: newValue,
-                label: newLabel,
-                sourceNodeId: incomingEdge.source,
-                sourceField: sourceHandle
+                label: newLabel
               }
             };
           }
@@ -146,13 +142,12 @@ export default function App() {
       });
     });
 
-    // อัปเดท edge labels ในเวลาเดียวกัน
+    // อัปเดท edge labels
     setEdges((currentEdges) => {
       return currentEdges.map(edge => {
-        if (edge.source === "a") { // DateTime node id
-          let newEndLabel = edge.data?.endLabel;
+        if (edge.source === "a" && edge.data) {
+          let newEndLabel = edge.data.endLabel;
           
-          // อัปเดท endLabel ตาม sourceHandle
           switch (edge.sourceHandle) {
             case "year":
               newEndLabel = newDateTimeValue.Year.toString();
@@ -175,8 +170,6 @@ export default function App() {
             case "day_week":
               newEndLabel = newDateTimeValue.Day_Week.toString();
               break;
-            default:
-              break;
           }
           
           return {
@@ -192,12 +185,12 @@ export default function App() {
     });
   }, [setNodes, setEdges, edges]);
 
-  // เรียก updateDateTime ครั้งแรกเมื่อ component mount เพื่อแก้ bug ค่าเริ่มต้น
+  // เรียก updateDateTime ครั้งแรก
   useEffect(() => {
     updateDateTime();
-  }, [updateDateTime]);
+  }, []);
 
-  // อัปเดท datetime ทุกวินาที
+  // อัปเดททุกวินาที
   useEffect(() => {
     const interval = setInterval(updateDateTime, 1000);
     return () => clearInterval(interval);
@@ -220,33 +213,17 @@ export default function App() {
         <Controls />
       </ReactFlow>
       
-      {/* คำแนะนำการใช้งาน */}
+      {/* UI Info */}
       <div className="absolute top-4 left-4 z-10 bg-white p-4 rounded shadow-lg max-w-sm">
-        <h3 className="font-bold mb-2">🎯 วิธีการใช้งาน:</h3>
-        <ol className="text-sm space-y-1">
-          <li>1. ลาก Handle จาก DateTime Node</li>
-          <li>2. ไปต่อที่ Empty Box ด้านขวา</li>
-          <li>3. Box จะแสดงข้อมูลตามที่เชื่อมต่อ</li>
-          <li>4. ข้อมูลจะอัปเดทแบบ real-time</li>
-        </ol>
+        <h3 className="font-bold mb-2">🎯 ReactFlow Status:</h3>
+        <p className="text-sm">Nodes: {nodes.length}</p>
+        <p className="text-sm">Edges: {edges.length}</p>
         <button
           onClick={updateDateTime}
           className="mt-3 bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
         >
-          อัปเดทเวลาเดี๋ยวนี้
+          อัปเดทเวลา
         </button>
-      </div>
-      
-      {/* แสดงข้อมูล edges ปัจจุบัน */}
-      <div className="absolute bottom-4 left-4 z-10 bg-white p-3 rounded shadow-lg">
-        <h4 className="font-bold text-sm mb-1">🔗 การเชื่อมต่อปัจจุบัน:</h4>
-        <div className="text-xs space-y-1 max-h-32 overflow-y-auto">
-          {edges.map(edge => (
-            <div key={edge.id} className="text-gray-600">
-              {edge.source}({edge.sourceHandle}) → {edge.target}
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         <h3 className="font-semibold text-lg text-gray-800">DATE_TIME</h3>
       </div>
 
-      <div className="flex flex-col mt-6 gap-y-3 items-end">
+      <div className="flex flex-col mt-6 gap-y-3 items-center">
         {/* Year */}
         <div className="flex items-center justify-between h-6">
           <span className="text-gray-700">Year</span>
@@ -174,6 +174,106 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         isConnectable={isConnectable}
       >
         <span className="text-gray-900 font-medium text-lg ml-24">{data.value.Day_Week}</span>
+       </Handle>
+
+       { /* */ }
+
+       <Handle
+        type="target"
+        id="year"
+        position={Position.Left}
+        style={{
+          ...DEFAULT_HANDLE_STYLE,
+          top: "89px",
+          right: "-1px",
+          
+        }}
+        isConnectable={isConnectable}
+        
+      >
+        
+      </Handle>
+
+      <Handle
+        type="target"
+        id="month"
+        position={Position.Left}
+        style={{
+          ...DEFAULT_HANDLE_STYLE,
+          top: "125px",
+          right: "-1px",
+        }}
+        isConnectable={isConnectable}
+      >
+        
+       </Handle>
+      <Handle
+        type="target"
+        id="day_month"
+        position={Position.Left}
+        style={{
+          ...DEFAULT_HANDLE_STYLE,
+          top: "161px",
+          right: "-1px",
+        }}
+        isConnectable={isConnectable}
+      >
+        
+      </Handle>
+      <Handle
+        type="target"
+        id="hours"
+        position={Position.Left}
+        style={{
+          ...DEFAULT_HANDLE_STYLE,
+          top: "197px",
+          right: "-1px",
+        }}
+        isConnectable={isConnectable}
+      >
+        
+      </Handle>
+        
+      <Handle
+        type="target"
+        id="minutes"
+        position={Position.Left}
+        style={{
+          ...DEFAULT_HANDLE_STYLE,
+          top: "233px",
+          right: "-1px",
+        }}
+        isConnectable={isConnectable}
+      >
+        
+       </Handle>
+
+      <Handle
+        type="target"
+        id="seconds"
+        position={Position.Left}
+        style={{
+          ...DEFAULT_HANDLE_STYLE,
+          top: "269px",
+          right: "-1px",
+        }}
+        isConnectable={isConnectable}
+      >
+        
+      </Handle>
+
+      <Handle
+        type="target"
+        id="day_week"
+        position={Position.Left}
+        style={{
+          ...DEFAULT_HANDLE_STYLE,
+          top: "305px",
+          right: "-1px",
+        }}
+        isConnectable={isConnectable}
+      >
+        
        </Handle>
     </div>
   );
