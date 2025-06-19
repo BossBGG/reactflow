@@ -13,7 +13,7 @@ const DEFAULT_HANDLE_STYLE = {
   justifyContent: "center",
   fontSize: "12px",
   fontWeight: "bold",
-  color: "#374151",
+  color: "",
   zIndex: 10,
 } as React.CSSProperties;
 

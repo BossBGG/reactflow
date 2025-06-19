@@ -3,6 +3,8 @@ import { PositionLoggerNode } from "./PositionLoggerNode";
 import DateTimeNodeComponent from "./DateTimeNode";
 import LoGComponent from "./LoG";
 import NumberDisplayNodeComponent from "./NumberDisplayNode";
+import NumberInputNodeComponent from './NumberInputNode';
+import TestComponent from "./test";
 
 // กำหนด interface แยกจาก Node type
 export interface DateTimeNodeData {
@@ -23,12 +25,21 @@ export interface LoGNodeData {
   value?: string;
 }
 
+export interface TestComponent {
+  label?: string;
+  value?: string;
+}
+
 export interface NumberDisplayNodeData {
   label?: string;
   value: number;
   color?: string;
   sourceNodeId?: string;
   sourceField?: string;
+}
+
+export interface NumberInputNodeData {
+  text: string;
 }
 
 export interface PositionLoggerNodeData {
@@ -39,9 +50,11 @@ export interface PositionLoggerNodeData {
 export type PositionLoggerNodeType = Node<PositionLoggerNodeData, "position-logger">;
 export type DateTimeNode = Node<DateTimeNodeData, "datetime">;
 export type LoGNode = Node<LoGNodeData, "LoG">;
+export type TestNode = Node<TestComponent, "test">
 export type NumberDisplayNode = Node<NumberDisplayNodeData, "number-display">;
+export type NumberInputNode = Node<NumberInputNodeData, "number-input">;
 
-export type AppNode = BuiltInNode | PositionLoggerNodeType | DateTimeNode | LoGNode | NumberDisplayNode;
+export type AppNode = BuiltInNode | PositionLoggerNodeType | DateTimeNode | LoGNode | TestNode| NumberDisplayNode | NumberInputNode;
 
 export const initialNodes: AppNode[] = [
   { 
@@ -70,14 +83,14 @@ export const initialNodes: AppNode[] = [
       value: "edge-detection" 
     },
   },
-  // NumberDisplayNodes ที่มีการเชื่อมต่อตายตัว (จะถูกอัปเดทด้วยข้อมูลจริง)
+  // NumberDisplayNodes ที่มีการเชื่อมต่อตายตัว
   {
     id: "c",
     type: "number-display",
     position: { x: 450, y: 200 },
     data: { 
       label: "Month",
-      value: 0, // จะถูกอัปเดทจาก updateDateTime()
+      value: 0,
       color: "#3B82F6",
       sourceNodeId: "a",
       sourceField: "Month"
@@ -89,7 +102,7 @@ export const initialNodes: AppNode[] = [
     position: { x: 450, y: 350 },
     data: { 
       label: "Day Week",
-      value: 0, // จะถูกอัปเดทจาก updateDateTime()
+      value: 0,
       color: "#EF4444",
       sourceNodeId: "a",
       sourceField: "Day_Week"
@@ -101,13 +114,13 @@ export const initialNodes: AppNode[] = [
     position: { x: 450, y: 500 },
     data: { 
       label: "Seconds",
-      value: 0, // จะถูกอัปเดทจาก updateDateTime()
+      value: 0,
       color: "#F59E0B",
       sourceNodeId: "a",
       sourceField: "Seconds"
     },
   },
-  // NumberDisplayNodes ว่างสำหรับทดสอบการลาก edge
+  // NumberDisplayNodes ว่างสำหรับทดสอบ
   {
     id: "f",
     type: "number-display",
@@ -115,7 +128,7 @@ export const initialNodes: AppNode[] = [
     data: { 
       label: "Empty Box 1",
       value: 0,
-      color: "#10B981" // สีเขียว
+      color: "#10B981"
     },
   },
   {
@@ -125,7 +138,7 @@ export const initialNodes: AppNode[] = [
     data: { 
       label: "Empty Box 2",
       value: 0,
-      color: "#8B5CF6" // สีม่วง
+      color: "#8B5CF6"
     },
   },
   {
@@ -135,7 +148,25 @@ export const initialNodes: AppNode[] = [
     data: { 
       label: "Empty Box 3",
       value: 0,
-      color: "#F59E0B" // สีเหลือง
+      color: "#F59E0B"
+    },
+  },
+  // NumberInputNode
+  {
+    id: "i",
+    type: "number-input",
+    position: { x: -300, y: 200 },
+    data: {
+      text: '5',
+    },
+  },
+  {
+    id: "j",
+    type: "test",
+    position: { x: 700, y: 200 },
+    data: { 
+      label: "Test",
+      value: "" 
     },
   },
 ];
@@ -144,5 +175,7 @@ export const nodeTypes: NodeTypes = {
   "position-logger": PositionLoggerNode,
   "datetime": DateTimeNodeComponent,
   "LoG": LoGComponent,
+  "test": TestComponent,
   "number-display": NumberDisplayNodeComponent,
+  "number-input": NumberInputNodeComponent, 
 };

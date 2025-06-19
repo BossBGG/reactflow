@@ -10,7 +10,7 @@ const DEFAULT_HANDLE_STYLE = {
   width: 16,
   height: 16,
   left: -8,
-  background: "#ffffff",
+  background: "#000000",
   border: "2px solid #EC4899",
   borderRadius: "50%",
   display: "flex",
