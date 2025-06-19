@@ -274,24 +274,24 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
       />
 
       <Handle
-        type="source"
-        id="a"
+        type="target"
+        id="top_input"
         position={Position.Top}
         style={{
-          ...DEFAULT_HANDLE_STYLE,
+          ...TARGET_HANDLE_STYLE,
           top: "0px",
           left: "140px",
         }}
         isConnectable={isConnectable}
       >
-        <div className="mt-8">
-          TopOutput
+        <div className="mt-8 text-black">
+          TopInput
         </div>
       </Handle>
 
       <Handle
         type="source"
-        id="b"
+        id="bottom_output"
         position={Position.Bottom}
         style={{
           ...DEFAULT_HANDLE_STYLE,
@@ -300,7 +300,7 @@ export default memo(({ data, isConnectable }: NodeProps<DateTimeNodeData>) => {
         }}
         isConnectable={isConnectable}
       >
-        <div className="mb-8"> 
+        <div className="mb-8 text-black"> 
           BottomOutput
         </div>
       </Handle>

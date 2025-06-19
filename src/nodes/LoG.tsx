@@ -45,7 +45,12 @@ export default memo(({ data, isConnectable }: NodeProps<LoGNodeData>) => {
           transform: "translateY(-50%)",
         }}
         isConnectable={isConnectable}
-      />
+      >
+      <div className=" ml-8">
+        IN
+      </div>
+        
+      </Handle>  
     </div>
   );
 });

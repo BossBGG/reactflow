@@ -8,13 +8,13 @@ import {
   useNodesState,
   useEdgesState,
   type OnConnect,
+  MarkerType,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
 
 import { initialNodes, nodeTypes } from "./nodes";
 import { initialEdges, edgeTypes } from "./edges";
-
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -36,11 +36,13 @@ export default function App() {
         animated: true,
         style: { stroke: '#6B7280', strokeWidth: 2 },
         type: 'start-end',
-        data: {
-          
-          
-          endLabel: '0',
+        markerEnd: {
+          type: MarkerType.Arrow,
+          width: 20,
+          height: 20,
+          color: '#000000',
         }
+        
       };
       setEdges((edges) => addEdge(newEdge, edges));
     },
@@ -68,6 +70,7 @@ export default function App() {
         let additionalValues = {
           Year: 0, Month: 0, Day_Month: 0, Hours: 0, Minutes: 0, Seconds: 0, Day_Week: 0
         };
+        let topInputValue = 0;
 
         // ตรวจสอบ incoming edges จาก number-input nodes
         const incomingEdges = edges.filter(edge => edge.target === "a");
@@ -78,28 +81,32 @@ export default function App() {
             const inputValue = parseInt((sourceNode.data as any).text) || 0;
             
             // เพิ่มค่าตาม targetHandle
-            switch (edge.targetHandle) {
-              case "year_input":
-                additionalValues.Year += inputValue;
-                break;
-              case "month_input":
-                additionalValues.Month += inputValue;
-                break;
-              case "day_month_input":
-                additionalValues.Day_Month += inputValue;
-                break;
-              case "hours_input":
-                additionalValues.Hours += inputValue;
-                break;
-              case "minutes_input":
-                additionalValues.Minutes += inputValue;
-                break;
-              case "seconds_input":
-                additionalValues.Seconds += inputValue;
-                break;
-              case "day_week_input":
-                additionalValues.Day_Week += inputValue;
-                break;
+            if (edge.targetHandle === "top_input") {
+              topInputValue = inputValue; // เก็บค่าสำหรับ top input
+            } else {
+              switch (edge.targetHandle) {
+                case "year_input":
+                  additionalValues.Year += inputValue;
+                  break;
+                case "month_input":
+                  additionalValues.Month += inputValue;
+                  break;
+                case "day_month_input":
+                  additionalValues.Day_Month += inputValue;
+                  break;
+                case "hours_input":
+                  additionalValues.Hours += inputValue;
+                  break;
+                case "minutes_input":
+                  additionalValues.Minutes += inputValue;
+                  break;
+                case "seconds_input":
+                  additionalValues.Seconds += inputValue;
+                  break;
+                case "day_week_input":
+                  additionalValues.Day_Week += inputValue;
+                  break;
+              }
             }
           }
         });
@@ -114,6 +121,21 @@ export default function App() {
           Seconds: baseDateTime.Seconds + additionalValues.Seconds,
           Day_Week: baseDateTime.Day_Week + additionalValues.Day_Week
         };
+
+        // อัปเดท datetime node พร้อม topInputValue
+        return currentNodes.map(node => {
+          if (node.type === "datetime") {
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                value: baseDateTime,
+                topInputValue: topInputValue
+              }
+            };
+          }
+          return node;
+        });
       }
 
       // อัปเดท datetime node
@@ -164,35 +186,44 @@ export default function App() {
             let newValue = 0;
             let newLabel = nodeData.label;
             
-            switch (sourceHandle) {
-              case "year":
-                newValue = dateTimeValue.Year;
-                newLabel = "Year";
-                break;
-              case "month":
-                newValue = dateTimeValue.Month;
-                newLabel = "Month";
-                break;
-              case "day_month":
-                newValue = dateTimeValue.Day_Month;
-                newLabel = "Day";
-                break;
-              case "hours":
-                newValue = dateTimeValue.Hours;
-                newLabel = "Hours";
-                break;
-              case "minutes":
-                newValue = dateTimeValue.Minutes;
-                newLabel = "Minutes";
-                break;
-              case "seconds":
-                newValue = dateTimeValue.Seconds;
-                newLabel = "Seconds";
-                break;
-              case "day_week":
-                newValue = dateTimeValue.Day_Week;
-                newLabel = "Day Week";
-                break;
+            // จัดการ bottom_output - ส่งค่าจาก topInputValue
+            if (sourceHandle === "bottom_output") {
+              const dateTimeNode = currentNodes.find(n => n.id === "a");
+              if (dateTimeNode && dateTimeNode.type === "datetime") {
+                newValue = (dateTimeNode.data as any).topInputValue || 0;
+                newLabel = "Top Input Value";
+              }
+            } else {
+              switch (sourceHandle) {
+                case "year":
+                  newValue = dateTimeValue.Year;
+                  newLabel = "Year";
+                  break;
+                case "month":
+                  newValue = dateTimeValue.Month;
+                  newLabel = "Month";
+                  break;
+                case "day_month":
+                  newValue = dateTimeValue.Day_Month;
+                  newLabel = "Day";
+                  break;
+                case "hours":
+                  newValue = dateTimeValue.Hours;
+                  newLabel = "Hours";
+                  break;
+                case "minutes":
+                  newValue = dateTimeValue.Minutes;
+                  newLabel = "Minutes";
+                  break;
+                case "seconds":
+                  newValue = dateTimeValue.Seconds;
+                  newLabel = "Seconds";
+                  break;
+                case "day_week":
+                  newValue = dateTimeValue.Day_Week;
+                  newLabel = "Day Week";
+                  break;
+              }
             }
             
             return {
@@ -216,28 +247,36 @@ export default function App() {
         if (edge.source === "a" && edge.data) {
           let newEndLabel = edge.data.endLabel;
           
-          switch (edge.sourceHandle) {
-            case "year":
-              newEndLabel = dateTimeValue.Year.toString();
-              break;
-            case "month":
-              newEndLabel = dateTimeValue.Month.toString();
-              break;
-            case "day_month":
-              newEndLabel = dateTimeValue.Day_Month.toString();
-              break;
-            case "hours":
-              newEndLabel = dateTimeValue.Hours.toString();
-              break;
-            case "minutes":
-              newEndLabel = dateTimeValue.Minutes.toString();
-              break;
-            case "seconds":
-              newEndLabel = dateTimeValue.Seconds.toString();
-              break;
-            case "day_week":
-              newEndLabel = dateTimeValue.Day_Week.toString();
-              break;
+          // จัดการ bottom_output edge
+          if (edge.sourceHandle === "bottom_output") {
+            const dateTimeNode = nodes.find(n => n.id === "a");
+            if (dateTimeNode && dateTimeNode.type === "datetime") {
+              newEndLabel = ((dateTimeNode.data as any).topInputValue || 0).toString();
+            }
+          } else {
+            switch (edge.sourceHandle) {
+              case "year":
+                newEndLabel = dateTimeValue.Year.toString();
+                break;
+              case "month":
+                newEndLabel = dateTimeValue.Month.toString();
+                break;
+              case "day_month":
+                newEndLabel = dateTimeValue.Day_Month.toString();
+                break;
+              case "hours":
+                newEndLabel = dateTimeValue.Hours.toString();
+                break;
+              case "minutes":
+                newEndLabel = dateTimeValue.Minutes.toString();
+                break;
+              case "seconds":
+                newEndLabel = dateTimeValue.Seconds.toString();
+                break;
+              case "day_week":
+                newEndLabel = dateTimeValue.Day_Week.toString();
+                break;
+            }
           }
           
           return {
@@ -248,13 +287,13 @@ export default function App() {
             }
           };
         }
-
-        // อัปเดท edges จาก NumberInput nodes 
+        
+        // อัปเดท edges จาก NumberInput nodes
         if (edge.target === "a" && edge.data) {
           const sourceNode = nodes.find(n => n.id === edge.source);
           if (sourceNode && sourceNode.type === "number-input") {
-            const inputValue = (sourceNode.data as any).text || '0';
-
+            const inputValue = (sourceNode.data as any).text || "0";
+            
             return {
               ...edge,
               data: {
@@ -264,10 +303,11 @@ export default function App() {
             };
           }
         }
+        
         return edge;
       });
     });
-  }, [setNodes, setEdges, edges , nodes]);
+  }, [setNodes, setEdges, edges, nodes]);
 
   // เรียก updateDateTime ครั้งแรก
   useEffect(() => {
@@ -296,7 +336,7 @@ export default function App() {
       Month: now.getMonth() + 1,
       Day_Month: now.getDate(),
       Hours: now.getHours(),
-      Minutes: now.getMinutes()  ,
+      Minutes: now.getMinutes(),
       Seconds: now.getSeconds(),
       Day_Week: now.getDay()
     };
@@ -309,7 +349,7 @@ export default function App() {
     if (dateTimeValue) {
       setTimeout(() => updateConnectedNodes(dateTimeValue), 50);
     }
-  }, [nodes.map(n => n.data).join(',')]); // เมื่อ node data เปลี่ยน
+  }, [nodes.map(n => JSON.stringify(n.data)).join(',')]); // เมื่อ node data เปลี่ยน
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
